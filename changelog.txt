@@ -1,5 +1,7 @@
 0.1.1
  - added force viewmode to addon settings (default enabled)
  - added setting for update-on-pageswitch (default enabled)
+ - fix error on empty search result
+ - fix error in search query suggestions
 0.1.0
  - initial beta release

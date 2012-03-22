@@ -220,19 +220,22 @@ def __parse_video_default(tree, path):
     r_td = re.compile('body sTLeft')
     items = []
     pagination = subtree.find('div', {'class': 'pView'})
-    prev_link = pagination.find('a', {'class': 'pView pnBack'})
-    if prev_link:
-        items.append({'title': prev_link['title'],
-                      'pagenination': 'PREV',
-                      'path': prev_link['href']})
-    next_link = pagination.find('a', {'class': 'pView pnNext'})
-    if next_link:
-        items.append({'title': next_link['title'],
-                      'pagenination': 'NEXT',
-                      'path': next_link['href']})
+    if pagination:
+        prev_link = pagination.find('a', {'class': 'pView pnBack'})
+        if prev_link:
+            items.append({'title': prev_link['title'],
+                          'pagenination': 'PREV',
+                          'path': prev_link['href']})
+        next_link = pagination.find('a', {'class': 'pView pnNext'})
+        if next_link:
+            items.append({'title': next_link['title'],
+                          'pagenination': 'NEXT',
+                          'path': next_link['href']})
     sections = subtree.findAll('td', {'class': r_td})
     for sec in sections:
         link = sec.find('a', {'class': 'vLink'})
+        if not link:
+            continue
         path = link['href']
         is_folder, video_id = __detect_folder(path)
         title = link['title']
