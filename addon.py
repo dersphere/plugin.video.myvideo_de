@@ -39,12 +39,12 @@ class Plugin_mod(Plugin):
                                             '', li_info.get('url'))
                 urls.append(li_info.get('url'))
         if self._mode is 'xbmc':
-            xbmcplugin.addDirectoryItems(self.handle, items, len(items))
-            for id in sort_method_ids:
-                xbmcplugin.addSortMethod(self.handle, id)
             if override_view_mode:
                 cmd = 'Container.SetViewMode(%s)' % 500
                 xbmc.executebuiltin(cmd)
+            xbmcplugin.addDirectoryItems(self.handle, items, len(items))
+            for id in sort_method_ids:
+                xbmcplugin.addSortMethod(self.handle, id)
             xbmcplugin.endOfDirectory(self.handle, updateListing=is_update)
         return urls
 
