@@ -1,2 +1,4 @@
+0.1.1
+ - added force viewmode to addon settings
 0.1.0
  - initial beta release

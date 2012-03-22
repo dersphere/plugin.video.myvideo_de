@@ -3,4 +3,6 @@
     <!-- General entries -->
     <string id="30000">Seite</string>
     <string id="30001">Suche</string>
+    <!-- Settings -->
+    <string id="30010">ViewMode auf Thumbnail setzen</string>
 </strings>

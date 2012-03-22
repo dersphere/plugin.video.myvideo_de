@@ -43,9 +43,8 @@ class Plugin_mod(Plugin):
             for id in sort_method_ids:
                 xbmcplugin.addSortMethod(self.handle, id)
             if override_view_mode:
-                if xbmc.getSkinDir() == 'skin.confluence':
-                    cmd = 'Container.SetViewMode(%s)' % 500
-                    xbmc.executebuiltin(cmd)
+                cmd = 'Container.SetViewMode(%s)' % 500
+                xbmc.executebuiltin(cmd)
             xbmcplugin.endOfDirectory(self.handle, updateListing=is_update)
         return urls
 
@@ -115,8 +114,12 @@ def show_path(path):
 def __add_items(entries):
     items = []
     sort_methods = [xbmcplugin.SORT_METHOD_UNSORTED, ]
+    force_viewmode = plugin.get_setting('force_viewmode') == 'true'
+    has_icons = False
     is_update = False
     for e in entries:
+        if force_viewmode and not has_icons and e.get('thumb', False):
+            has_icons = True
         if e.get('pagenination', False):
             if e['pagenination'] == 'PREV':
                 is_update = True
@@ -156,7 +159,7 @@ def __add_items(entries):
     __log('__add_items end')
     return plugin.add_items(items, is_update=is_update,
                             sort_method_ids=sort_methods,
-                            override_view_mode=False)
+                            override_view_mode=has_icons)
 
 
 @plugin.route('/video/<video_id>/')
