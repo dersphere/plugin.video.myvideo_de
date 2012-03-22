@@ -3,5 +3,6 @@
  - added setting for update-on-pageswitch (default enabled)
  - fix error on empty search result
  - fix error in search query suggestions
+ - fix playback of MTV-flashplayer videos (Madonna...)
 0.1.0
  - initial beta release

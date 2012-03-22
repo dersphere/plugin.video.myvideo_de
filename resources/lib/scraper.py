@@ -145,6 +145,11 @@ def get_video(video_id, console_debug=False):
         else:
             encxml = unquote(b)
     xmldata_url = '%s?%s' % (encxml, urlencode(params))
+    if 'flash_playertype=MTV' in xmldata_url:
+        __log('get_video avoiding MTV player')
+        xmldata_url = ('http://www.myvideo.de/dynamic/get_player_video_xml.php'
+                       '?flash_playertype=D&ID=%s&_countlimit=4&autorun=yes') \
+                       % video_id
     enc_data = __get_url(xmldata_url, videopage_url).split('=')[1]
     enc_data_b = unhexlify(enc_data)
     sk = __md5(b64decode(b64decode(GK)) + __md5(str(video_id)))
