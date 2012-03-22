@@ -1,4 +1,5 @@
 0.1.1
- - added force viewmode to addon settings
+ - added force viewmode to addon settings (default enabled)
+ - added setting for update-on-pageswitch (default enabled)
 0.1.0
  - initial beta release

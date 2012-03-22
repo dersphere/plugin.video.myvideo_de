@@ -115,6 +115,7 @@ def __add_items(entries):
     items = []
     sort_methods = [xbmcplugin.SORT_METHOD_UNSORTED, ]
     force_viewmode = plugin.get_setting('force_viewmode') == 'true'
+    update_on_pageswitch = plugin.get_setting('update_on_pageswitch') == 'true'
     has_icons = False
     is_update = False
     for e in entries:
@@ -122,7 +123,8 @@ def __add_items(entries):
             has_icons = True
         if e.get('pagenination', False):
             if e['pagenination'] == 'PREV':
-                is_update = True
+                if update_on_pageswitch:
+                    is_update = True
                 title = '<< %s %s <<' % (plugin.get_string(30000), e['title'])
             elif e['pagenination'] == 'NEXT':
                 title = '>> %s %s >>' % (plugin.get_string(30000), e['title'])
