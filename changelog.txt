@@ -1,5 +1,6 @@
 0.1.2
  - fix playback of rtmpt streams
+ - added viewmode ids for all official skins
 0.1.1
  - added force viewmode to addon settings (default enabled)
  - added setting for update-on-pageswitch (default enabled)

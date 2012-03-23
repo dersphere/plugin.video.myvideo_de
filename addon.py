@@ -25,6 +25,18 @@ __id__ = 'plugin.video.myvideo_de'
 
 DEBUG = False
 
+THUMBNAIL_VIEW_IDS = {'skin.confluence': 500,
+                      'skin.aeon.nox': 551,
+                      'skin.confluence-vertical': 500,
+                      'skin.jx720': 52,
+                      'skin.pm3-hd': 53,
+                      'skin.rapier': 50,
+                      'skin.simplicity': 500,
+                      'skin.slik': 53,
+                      'skin.touched': 500,
+                      'skin.transparency': 53,
+                      'skin.xeebo': 55}
+
 
 class Plugin_mod(Plugin):
 
@@ -40,8 +52,11 @@ class Plugin_mod(Plugin):
                 urls.append(li_info.get('url'))
         if self._mode is 'xbmc':
             if override_view_mode:
-                cmd = 'Container.SetViewMode(%s)' % 500
-                xbmc.executebuiltin(cmd)
+                skin = xbmc.getSkinDir()
+                thumbnail_view = THUMBNAIL_VIEW_IDS.get(skin)
+                if thumbnail_view:
+                    cmd = 'Container.SetViewMode(%s)' % thumbnail_view
+                    xbmc.executebuiltin(cmd)
             xbmcplugin.addDirectoryItems(self.handle, items, len(items))
             for id in sort_method_ids:
                 xbmcplugin.addSortMethod(self.handle, id)
