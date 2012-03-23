@@ -156,6 +156,9 @@ def get_video(video_id, console_debug=False):
     dec_data = __rc4crypt(enc_data_b, sk)
     rtmpurl = re.search(r_rtmpurl, dec_data).group(1)
     video['rtmpurl'] = unquote(rtmpurl)
+    if 'myvideo2flash' in video['rtmpurl']:
+        __log('get_video using RTMPT')
+        video['rtmpurl'] = video['rtmpurl'].replace('rtmpe://', 'rtmpt://')
     playpath = re.search(r_playpath, dec_data).group(1)
     video['file'] = unquote(playpath)
     ppath, prefix = unquote(playpath).split('.')
@@ -171,7 +174,7 @@ def get_video(video_id, console_debug=False):
         if console_debug:
             print 'wget %s' % video_url
     else:
-        __log('get_video using RTMPE')
+        __log('get_video using RTMP')
         if console_debug:
             print ('rtmpdump '
                    '--rtmp "%s" '
