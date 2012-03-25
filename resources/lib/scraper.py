@@ -50,7 +50,9 @@ BLOCKED_SUBCATS = ('/Videos_A-Z/Video_Flight',
                    '/musik-tv',
                    '/channel/Clipgenerator',
                    '/echo',
-                   '/Themen/Sexy',)
+                   '/Themen/Sexy',
+                   '/Top_100/Top_100_Playlisten',
+                   '/Serien/WWE')
 
 R_ID = re.compile('watch/([0-9]+)/')
 
@@ -210,8 +212,11 @@ def __parse_video_charts(tree, path):
         is_folder, video_id = __detect_folder(path)
         title = sec.a['title']
         thumb = sec.img['src']
-        length_str = sec.span.string
-        length = __format_length(length_str)
+        try:
+            length_str = sec.span.string
+            length = __format_length(length_str)
+        except AttributeError:
+            length = '0:00'
         items.append({'title': title,
                       'thumb': thumb,
                       'length': length,
