@@ -105,7 +105,7 @@ def get_path(path):
         items = __parse_video_charts(tree, path)
     elif 'channel' in path:
         items = __parse_channels(tree, path)
-    elif 'playlist' in path:
+    elif 'playlist' in path:  # fixme: needs to be rewritten
         items = __parse_playlists(tree, path)
     elif 'Musik_K' in path:
         if not 'lpage' in path:
@@ -159,7 +159,7 @@ def get_video(video_id, console_debug=False):
     rtmpurl = re.search(r_rtmpurl, dec_data).group(1)
     video['rtmpurl'] = unquote(rtmpurl)
     if 'myvideo2flash' in video['rtmpurl']:
-        __log('get_video using RTMPT')
+        __log('get_video forcing RTMPT')
         video['rtmpurl'] = video['rtmpurl'].replace('rtmpe://', 'rtmpt://')
     playpath = re.search(r_playpath, dec_data).group(1)
     video['file'] = unquote(playpath)
@@ -176,7 +176,7 @@ def get_video(video_id, console_debug=False):
         if console_debug:
             print 'wget %s' % video_url
     else:
-        __log('get_video using RTMP')
+        __log('get_video using RTMPE or RTMPT')
         if console_debug:
             print ('rtmpdump '
                    '--rtmp "%s" '
@@ -577,7 +577,6 @@ def __get_tree(url, referer=None):
 
 def __start():
     __log('started')
-    MAIN_URL = __get_url('http://goo.gl/3Rrh8')
     pass
 
 
@@ -616,4 +615,4 @@ def __md5(s):
 
 
 def __log(msg):
-    print('myv scraper: %s' % msg)
+    print('MyVideo.de scraper: %s' % msg)
