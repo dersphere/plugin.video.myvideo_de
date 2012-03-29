@@ -10,9 +10,9 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <summary lang="en"></summary>
-    <summary lang="de"></summary>
-    <description lang="en"></description>
-    <description lang="de"></description>
+    <summary lang="en">video plugin for MyVideo.de</summary>
+    <summary lang="de">Video plugin für MyVideo.de</summary>
+    <description lang="en">This plugin provides access to all videos from the german video portal MyVideo.de</description>
+    <description lang="de">Dieses plugin bietet Zugriff auf alle Videos des deutschen Video-Portals MyVideo.de</description>
   </extension>
 </addon>
