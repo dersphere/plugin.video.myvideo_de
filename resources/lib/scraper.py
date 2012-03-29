@@ -54,7 +54,7 @@ BLOCKED_SUBCATS = ('/Videos_A-Z/Video_Flight',
                    '/Top_100/Top_100_Playlisten',
                    '/Serien/WWE')
 
-R_ID = re.compile('watch/([0-9]+)/')
+R_ID = re.compile('watch/([0-9]+)/?')
 
 DEBUG = False
 
