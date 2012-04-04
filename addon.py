@@ -76,7 +76,7 @@ class Plugin_mod(Plugin):
             li.addContextMenuItems(options['context_menu'])
         return options['url'], li, options.get('is_folder', True)
 
-plugin = Plugin_mod(__addon_name__, __id__, __file__)
+plugin = Plugin_mod(__addon_name__, __id__)
 
 
 @plugin.route('/', default=True)

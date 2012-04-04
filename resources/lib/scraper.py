@@ -17,7 +17,7 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import hashlib
+import md5
 import re
 from base64 import b64decode
 from BeautifulSoup import BeautifulSoup
@@ -611,7 +611,7 @@ def __rc4crypt(data, key):
 
 
 def __md5(s):
-    return hashlib.md5(s).hexdigest()
+    return md5.new(s).hexdigest()
 
 
 def __log(msg):
