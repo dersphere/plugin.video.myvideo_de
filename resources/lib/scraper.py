@@ -282,7 +282,6 @@ def __parse_music(tree, path):
     r_td = re.compile('floatLeft fRand')
     subtree = tree.find('div', {'class': 'lContent'})
     sections = subtree.findAll('div', {'class': r_td})
-    print sections
     items = []
     for sec in sections:
         div = sec.find('div', {'class': 'vThumb chThumb'})
