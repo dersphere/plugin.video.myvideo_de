@@ -67,7 +67,7 @@ def get_categories():
 def get_sub_categories(path):
     __log('get_sub_categories started with path: %s' % path)
     tree = __get_tree(MAIN_URL)
-    section = tree.find('table', {'class': 'body topNavFW heightMin'})
+    section = tree.find('div', {'class': 'body topNavFW'})
     sub_cats = []
     link = section.find('a', {'href': '/%s' % path})
     if link:
