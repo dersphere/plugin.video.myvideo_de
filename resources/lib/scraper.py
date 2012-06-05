@@ -279,9 +279,10 @@ def __parse_video_default(tree, path):
 
 def __parse_music(tree, path):
     __log('__parse_music started with path: %s' % path)
-    r_td = re.compile('body sTLeft')
+    r_td = re.compile('floatLeft fRand')
     subtree = tree.find('div', {'class': 'lContent'})
-    sections = subtree.findAll('td', {'class': r_td})
+    sections = subtree.findAll('div', {'class': r_td})
+    print sections
     items = []
     for sec in sections:
         div = sec.find('div', {'class': 'vThumb chThumb'})
