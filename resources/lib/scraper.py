@@ -232,7 +232,7 @@ def __parse_video_charts(tree, path):
 def __parse_video_default(tree, path):
     __log('__parse_video_default started with path: %s' % path)
     subtree = tree.find('div', {'class': 'lContent'})
-    r_td = re.compile('body sTLeft')
+    r_td = re.compile('hslice.*?video_list')
     items = []
     pagination = subtree.find('div', {'class': 'pView'})
     if pagination:
@@ -246,7 +246,7 @@ def __parse_video_default(tree, path):
             items.append({'title': next_link['title'],
                           'pagenination': 'NEXT',
                           'path': next_link['href']})
-    sections = subtree.findAll('td', {'class': r_td})
+    sections = subtree.findAll('div', {'class': r_td})
     for sec in sections:
         link = sec.find('a', {'class': 'vLink'})
         if not link:
