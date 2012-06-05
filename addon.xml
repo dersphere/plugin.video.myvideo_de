@@ -15,5 +15,6 @@
     <summary lang="de">Video plugin für MyVideo.de</summary>
     <description lang="en">This plugin provides access to all videos from the german video portal MyVideo.de</description>
     <description lang="de">Dieses plugin bietet Zugriff auf alle Videos des deutschen Video-Portals MyVideo.de</description>
+    <disclaimer lang="en">Some parts of this addon may not be legal in your country of residence - please check with your local laws before installing.</disclaimer>
   </extension>
 </addon>
