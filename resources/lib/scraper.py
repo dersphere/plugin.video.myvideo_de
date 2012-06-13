@@ -379,7 +379,7 @@ def __parse_playlists(tree, path):
 def __parse_channels(tree, path):
     __log('__parse_channels started with path: %s' % path)
     r_div = re.compile('lBox floatLeft qLeftBox charts_box')
-    r_td = re.compile('body sTLeft')
+    r_td = re.compile('body floatLeft')
     subtree = tree.find('div', {'class': r_div})
     subtree2 = tree.find('div', {'class': 'uBList'})
     items = []
@@ -403,7 +403,7 @@ def __parse_channels(tree, path):
                 items.append({'title': next_link['title'],
                               'pagenination': 'NEXT',
                               'path': link})
-        sections = subtree.findAll('td', {'class': r_td})
+        sections = subtree.findAll('div', {'class': r_td})
         for sec in sections:
             d = sec.find('div', {'class': 'pChHead'})
             if d:
