@@ -52,7 +52,8 @@ BLOCKED_SUBCATS = ('/Videos_A-Z/Video_Flight',
                    '/echo',
                    '/Themen/Sexy',
                    '/Top_100/Top_100_Playlisten',
-                   '/Serien/WWE')
+                   '/Serien/WWE',
+                   '/Serien/Serien_Suche',)
 
 R_ID = re.compile('watch/([0-9]+)/?')
 
@@ -304,11 +305,13 @@ def __parse_music(tree, path):
 
 def __parse_categories(tree, path):
     __log('__parse_categories started with path: %s' % path)
-    r_td = re.compile('body sCenter cGround sTLeft')
-    sections = tree.findAll('td', {'class': r_td})
+    r_td = re.compile('body floatLeft')
+    sections = tree.findAll('div', {'class': r_td})
     items = []
     for sec in sections:
         d = sec.find('div', {'class': 'sCenter kTitle'})
+        if not d:
+            continue
         path = d.a['href']
         is_folder = True
         title = d.a.string
