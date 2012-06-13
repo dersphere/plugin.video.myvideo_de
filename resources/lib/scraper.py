@@ -458,11 +458,11 @@ def __parse_channels(tree, path):
 
 def __parse_shows(tree, path):
     __log('__parse_shows started with path: %s' % path)
-    r_td = re.compile('body sTLeft series_member')
+    r_td = re.compile('body .*? series_member')
     subtree = tree.find('div', {'class': 'lContent'})
     items = []
     if subtree:
-        sections = subtree.findAll('td', {'class': r_td})
+        sections = subtree.findAll('div', {'class': r_td})
         for sec in sections:
             d = sec.find('div', {'class': 'pChHead'})
             title = d.a['title']
