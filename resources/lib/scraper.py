@@ -214,7 +214,7 @@ def __parse_video_charts(tree, path):
         path = sec.a['href']
         is_folder, video_id = __detect_folder(path)
         title = sec.a['title']
-        thumb = sec.img['src']
+        thumb = __get_thumb(sec.img)
         try:
             length_str = sec.span.string
             length = __format_length(length_str)
@@ -255,7 +255,7 @@ def __parse_video_default(tree, path):
         path = link['href']
         is_folder, video_id = __detect_folder(path)
         title = link['title']
-        thumb = link.img['src']
+        thumb = __get_thumb(link.img)
         length_str = sec.find('span', {'class': 'vViews'}).string
         length = __format_length(length_str)
         username = sec.find('span', {'class': 'nick'}).a['title']
@@ -290,7 +290,7 @@ def __parse_music(tree, path):
             path = div.a['href']
             is_folder, video_id = __detect_folder(path)
             title = div.a['title']
-            thumb = div.img['src']
+            thumb = __get_thumb(div.img)
             length_str = div.find('span', {'class': 'vViews'}).string
             length = __format_length(length_str)
             items.append({'title': title,
@@ -315,7 +315,7 @@ def __parse_categories(tree, path):
         path = d.a['href']
         is_folder = True
         title = d.a.string
-        thumb = sec.find('div', {'class': 'vThumb kThumb'}).a.img['src']
+        thumb = __get_thumb(sec.find('div', {'class': 'vThumb kThumb'}).a.img)
         items.append({'title': title,
                       'thumb': thumb,
                       'path': path,
@@ -351,7 +351,7 @@ def __parse_shows_overview(tree, path):
         path = prevs.a['href']
         is_folder = True
         title = prevs.a.string
-        thumb = sec.find('div', {'class': 'vThumb pChThumb'}).div.img['src']
+        thumb = __get_thumb(sec.find('div', {'class': 'vThumb pChThumb'}).div.img)
         items.append({'title': title,
                       'thumb': thumb,
                       'path': path,
@@ -370,7 +370,7 @@ def __parse_playlists(tree, path):
         title = d.a['title']
         path = d.a['href']
         is_folder = True
-        thumb = sec.find('img', {'class': 'vThumb nThumb pThumb'})['src']
+        thumb = __get_thumb(sec.find('img', {'class': 'vThumb nThumb pThumb'}))
         items.append({'title': title,
                       'thumb': thumb,
                       'path': path,
@@ -415,7 +415,7 @@ def __parse_channels(tree, path):
                 is_folder, video_id = __detect_folder(path)
                 length_str = sec.find('span', {'class': 'vViews'}).string
                 length = __format_length(length_str)
-                thumb = sec.find('img', {'class': 'vThumb'})['src']
+                thumb = __get_thumb(sec.find('img', {'class': 'vThumb'}))
                 items.append({'title': title,
                               'thumb': thumb,
                               'path': path,
@@ -448,7 +448,7 @@ def __parse_channels(tree, path):
             is_folder, video_id = __detect_folder(path)
             length_str = sec.find('span', {'class': 'vViews uBvViews'}).string
             length = __format_length(length_str)
-            thumb = sec.find('img', {'class': 'uBThumb uBvThumb'})['src']
+            thumb = __get_thumb(sec.find('img', {'class': 'uBThumb uBvThumb'}))
             items.append({'title': title,
                           'thumb': thumb,
                           'path': path,
@@ -471,7 +471,7 @@ def __parse_shows(tree, path):
             title = d.a['title']
             path = d.a['href']
             is_folder = True
-            thumb = sec.find('img', {'class': 'vThumb'})['src']
+            thumb = __get_thumb(sec.find('img', {'class': 'vThumb'}))
             items.append({'title': title,
                           'thumb': thumb,
                           'path': path,
@@ -507,7 +507,7 @@ def __parse_movies(tree, path):
         is_folder, video_id = __detect_folder(path)
         length_str = sec.find('span', {'class': 'vViews'}).string
         length = __format_length(length_str)
-        thumb = sec.find('img', {'class': 'vThumb'})['src']
+        thumb = __get_thumb(sec.find('img', {'class': 'vThumb'}))
         items.append({'title': title,
                       'thumb': thumb,
                       'path': path,
@@ -544,7 +544,7 @@ def __parse_music_artists(tree, path):
             title = d.a['title']
             path = d.a['href']
             is_folder, video_id = __detect_folder(path)
-            thumb = d.img['src']
+            thumb = __get_thumb(d.img)
             items.append({'title': title,
                           'thumb': thumb,
                           'path': path,
@@ -572,6 +572,10 @@ def __detect_folder(path):
         video_id = m_id.group(1)
         is_folder = False
     return is_folder, video_id
+
+
+def __get_thumb(img):
+    return img.get('longdesc') or img.get('src')
 
 
 def __get_tree(url, referer=None):
