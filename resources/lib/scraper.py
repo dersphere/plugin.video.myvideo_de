@@ -426,7 +426,7 @@ def __parse_channels(tree, path):
         sections = subtree2.findAll('div', {'class': 'uBItem'})
         for sec in sections:
             d = sec.find('div', {'class': 'sCenter uBTitle'})
-            title = d.a['title']
+            title = d.a.string
             path = d.a['href']
             is_folder, video_id = __detect_folder(path)
             length_str = sec.find('span', {'class': 'vViews uBvViews'}).string
@@ -451,7 +451,7 @@ def __parse_shows(tree, path):
         sections = subtree.findAll('div', {'class': r_td})
         for sec in sections:
             d = sec.find('div', {'class': 'pChHead'})
-            title = d.a['title']
+            title = d.a.string
             path = d.a['href']
             is_folder = True
             thumb = __get_thumb(sec.find('img', {'class': 'vThumb'}))
