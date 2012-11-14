@@ -518,10 +518,10 @@ def __parse_letter(tree, path):
 
 def __parse_music_artists(tree, path):
     __log('__parse_music_artists started with path: %s' % path)
-    subtree = tree.find('div', {'class': 'lContent'})
+    subtree = tree.find('div', {'class': 'lBox mLeftBox music_channels'})
     items = []
     if subtree:
-        sections = subtree.findAll('td', {'class': 'body sTLeft'})
+        sections = subtree.findAll('div', {'class': 'body floatLeft sTLeft'})
         for sec in sections:
             d = sec.find('div', {'class': 'pChThumb pPrThumb'})
             title = d.a['title']
