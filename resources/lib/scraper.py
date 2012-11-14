@@ -76,6 +76,9 @@ def get_sub_categories(path):
             if l['href'] in BLOCKED_SUBCATS:
                 __log('skipping entry with link: %s' % l['href'])
                 continue
+            elif '/watch/' in l['href']:
+                __log('skipping playable entry with link: %s' % l['href'])
+                continue
             sub_cats.append({'title': l.span.string.strip(),
                              'path': l['href'][1:]})
     __log('get_sub_categories finished with %d elements' % len(sub_cats))
