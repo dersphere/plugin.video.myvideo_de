@@ -54,7 +54,8 @@ BLOCKED_SUBCATS = (
     '/Themen/Sexy',
     '/Top_100/Top_100_Playlisten',
     '/Serien/WWE',
-    '/Serien/Serien_Suche'
+    '/Serien/Serien_Suche',
+    '/channel/unforgettable'
 )
 
 R_ID = re.compile('watch/([0-9]+)/?')
