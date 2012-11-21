@@ -28,9 +28,8 @@ from urllib2 import urlopen, Request, HTTPError, URLError
 MAIN_URL = 'http://www.myvideo.de/'
 
 UA = (
-    'Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) '
-    'AppleWebKit/535.1 (KHTML, like Gecko) '
-    'Chrome/13.0.782.6 Safari/535.1'
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 '
+    '(KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
 )
 GK = (
     'WXpnME1EZGhNRGhpTTJNM01XVmhOREU0WldNNVpHTTJOakpt'
