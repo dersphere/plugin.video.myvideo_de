@@ -190,7 +190,7 @@ def get_video(video_id):
         __log('wget %s' % video_url)
     else:
         __log('get_video using RTMPE or RTMPT')
-        __log(
+        __log((
             'rtmpdump '
             '--rtmp "%(rtmpurl)s" '
             '--flv "test.flv" '
@@ -198,7 +198,7 @@ def get_video(video_id):
             '--swfVfy "%(swfobj)s" '
             '--pageUrl "%(pageurl)s" '
             '--playpath "%(playpath)s"'
-        ) % video
+        ) % video)
         video_url = (
             '%(rtmpurl)s '
             'tcUrl=%(rtmpurl)s '
