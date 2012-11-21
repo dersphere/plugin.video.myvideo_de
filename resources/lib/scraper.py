@@ -61,6 +61,10 @@ BLOCKED_SUBCATS = (
 R_ID = re.compile('watch/([0-9]+)/?')
 
 
+class NetworkError(Exception):
+    pass
+
+
 def get_categories():
     return CATEGORIES
 
@@ -614,7 +618,12 @@ def __get_url(url, referer=None):
         )
     )
     req.add_header('User-Agent', UA)
-    html = urlopen(req).read()
+    try:
+        html = urlopen(req).read()
+    except HTTPError, error:
+        raise NetworkError('HTTPError: %s' % error)
+    except URLError, error:
+        raise NetworkError('URLError: %s' % error)
     __log('__get_url got %d bytes' % len(html))
     return html
 

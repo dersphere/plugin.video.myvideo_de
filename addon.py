@@ -18,7 +18,7 @@
 #
 
 from xbmcswift2 import Plugin, xbmc
-import resources.lib.scraper as scraper
+from resources.lib import scraper
 
 STRINGS = {
     'page': 30000,
@@ -169,4 +169,7 @@ def __log(text):
 
 
 if __name__ == '__main__':
-    plugin.run()
+    try:
+        plugin.run()
+    except scraper.NetworkError:
+        plugin.notify(msg=_('network_error'))
