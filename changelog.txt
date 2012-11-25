@@ -1,3 +1,13 @@
+0.2.0
+ - added download possibility (rtmpdump binary needed!)
+ - updated translations
+ - migration to xbmcswift2
+ - fix music artists
+ - block playable entries from subcategories
+ - refactoring
+ - catch network errors
+ - block unplayable items (adobe air)
+ - fix quoting errors on website
 0.1.10
  - fix tv shows (no more Hasselhoff Video...)
 0.1.9
