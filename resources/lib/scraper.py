@@ -147,11 +147,13 @@ def get_video(video_id):
     r_rtmpurl = re.compile('connectionurl=\'(.*?)\'')
     r_playpath = re.compile('source=\'(.*?)\'')
     r_path = re.compile('path=\'(.*?)\'')
+    r_title = re.compile("<h1 class='globalHd'>(.*?)</h1>")
     video = {}
     params = {}
     encxml = ''
     videopage_url = MAIN_URL + 'watch/%s/' % video_id
     html = __get_url(videopage_url, MAIN_URL)
+    video['title'] = re.search(r_title, html).group(1)
     sec = re.search(r_adv, html).group(1)
     for (a, b) in re.findall(r_adv_p, sec):
         if not a == '_encxml':
@@ -185,29 +187,7 @@ def get_video(video_id):
     video['pageurl'] = videopage_url
     m_filepath = re.search(r_path, dec_data)
     video['filepath'] = m_filepath.group(1)
-    if not video['rtmpurl']:
-        __log('get_video using FLV')
-        video_url = video['filepath'] + video['file']
-        __log('wget %s' % video_url)
-    else:
-        __log('get_video using RTMPE or RTMPT')
-        __log((
-            'rtmpdump '
-            '--rtmp "%(rtmpurl)s" '
-            '--flv "test.flv" '
-            '--tcUrl "%(rtmpurl)s" '
-            '--swfVfy "%(swfobj)s" '
-            '--pageUrl "%(pageurl)s" '
-            '--playpath "%(playpath)s"'
-        ) % video)
-        video_url = (
-            '%(rtmpurl)s '
-            'tcUrl=%(rtmpurl)s '
-            'swfVfy=%(swfobj)s '
-            'pageUrl=%(pageurl)s '
-            'playpath=%(playpath)s'
-        ) % video
-    return video_url
+    return video
 
 
 def __parse_video_charts(tree):
