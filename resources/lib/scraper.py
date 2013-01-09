@@ -370,7 +370,6 @@ def __parse_webstars(tree):
     a_elements = subtree.findAll('a', recursive=False)
     items = []
     for a_element in a_elements:
-        print a_element
         path = a_element['href']
         is_folder, video_id = __detect_folder(path)
         title = a_element.find('span', {'class': 'headline-sub-sub'}).string

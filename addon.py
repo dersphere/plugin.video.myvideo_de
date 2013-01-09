@@ -134,7 +134,7 @@ def __add_items(entries):
                 'label': entry['title'],
                 'icon': entry.get('thumb', 'DefaultVideo.png'),
                 'info': {
-                    'duration': entry.get('length', '0:00'),
+                    'duration': entry.get('length', '0'),
                     'plot': entry.get('description', ''),
                     'studio': entry.get('username', ''),
                     'date': entry.get('date', ''),
