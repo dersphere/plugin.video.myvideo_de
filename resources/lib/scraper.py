@@ -147,7 +147,7 @@ def get_video(video_id):
     r_rtmpurl = re.compile('connectionurl=\'(.*?)\'')
     r_playpath = re.compile('source=\'(.*?)\'')
     r_path = re.compile('path=\'(.*?)\'')
-    r_title = re.compile("<h1 class='globalHd'>(.*?)</h1>")
+    r_title = re.compile("<h1(?: class='globalHd')?>(.*?)</h1>")
     video = {}
     params = {}
     encxml = ''
