@@ -558,11 +558,13 @@ def __parse_music_artists(tree):
 
 def __format_length(length_str):
     if ' min' in length_str:
-        length = length_str.replace(' min', '')
+        h = '0'
+        m, s = length_str.replace(' min', '').split(':')
     elif ' Std.' in length_str:
-        length = length_str.replace(' Std.', '')
+        h, m, s = length_str.replace(' Std.', '').split(':')
     else:
-        length = '0:00'
+        h, m, s = '0'
+    length = int(h) * 60 + int(m)
     return length
 
 
