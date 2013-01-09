@@ -132,6 +132,10 @@ def get_path(path):
         parser = __parse_shows_overview
     elif 'Serien' in path:
         parser = __parse_shows
+    elif '/archiv' in path:
+        parser = __parse_webstars
+    elif 'webstars' in path:
+        parser = __parse_webstars_overview
     else:
         parser = __parse_video_default
     tree = __get_tree(MAIN_URL + path)
@@ -337,6 +341,64 @@ def __parse_shows_overview(tree):
             'is_folder': is_folder
         })
     __log('__parse_shows_overview finished with %d elements' % len(items))
+    return items
+
+
+def __parse_webstars_overview(tree):
+    subtree = tree.find('div', {'class': 'content grid_12'})
+    sections = subtree.findAll('div')
+    items = []
+    r_archiv = re.compile('/archiv')
+    for sec in sections:
+        if sec.a:
+            path = sec.find('a', {'href': r_archiv})['href']
+            is_folder = True
+            title = sec.a.img['alt']
+            thumb = __get_thumb(sec.find('img'))
+            items.append({
+                'title': title,
+                'thumb': thumb,
+                'path': path,
+                'is_folder': is_folder
+            })
+    __log('__parse_webstars_overview finished with %d elements' % len(items))
+    return items
+
+
+def __parse_webstars(tree):
+    subtree = tree.find('div', {'class': 'video-list videos'})
+    a_elements = subtree.findAll('a', recursive=False)
+    items = []
+    for a_element in a_elements:
+        print a_element
+        path = a_element['href']
+        is_folder, video_id = __detect_folder(path)
+        title = a_element.find('span', {'class': 'headline-sub-sub'}).string
+        thumb = __get_thumb(a_element.find('img'))
+        items.append({
+            'title': title,
+            'thumb': thumb,
+            'path': path,
+            'is_folder': is_folder,
+            'video_id': video_id
+        })
+    pagination = tree.find('div', {'class': re.compile('video_pager')})
+    if pagination:
+        prev_link = pagination.find('a', text=u'\u25c4')
+        if prev_link and prev_link.parent.get('href'):
+            items.append({
+                'title': '',
+                'pagenination': 'PREV',
+                'path': prev_link.parent['href']
+            })
+        next_link = pagination.find('a', text=u'\u25ba')
+        if next_link and next_link.parent.get('href'):
+            items.append({
+                'title': '',
+                'pagenination': 'NEXT',
+                'path': next_link.parent['href']
+            })
+    __log('__parse_webstars finished with %d elements' % len(items))
     return items
 
 

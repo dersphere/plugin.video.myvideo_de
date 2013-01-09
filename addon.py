@@ -46,6 +46,13 @@ def show_categories():
         'label': _('search'),
         'path': plugin.url_for('video_search')}
     )
+    items.append({
+        'label': _('webstars'),
+        'path': plugin.url_for(
+            endpoint='show_path',
+            path='webstars'
+        )
+    })
     return plugin.finish(items)
 
 
