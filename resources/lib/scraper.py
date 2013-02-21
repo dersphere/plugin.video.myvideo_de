@@ -618,15 +618,13 @@ def __parse_music_artists(tree):
 
 
 def __format_length(length_str):
+    h = m = s = '0'
     if ' min' in length_str:
-        h = '0'
         m, s = length_str.replace(' min', '').split(':')
     elif ' Std.' in length_str:
         h, m, s = length_str.replace(' Std.', '').split(':')
-    else:
-        h, m, s = '0'
-    length = int(h) * 60 + int(m)
-    return length
+    seconds = int(h) * 3600 + int(m) * 60 + int(s)
+    return seconds
 
 
 def __detect_folder(path):

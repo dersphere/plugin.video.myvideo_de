@@ -134,7 +134,6 @@ def __add_items(entries):
                 'label': entry['title'],
                 'icon': entry.get('thumb', 'DefaultVideo.png'),
                 'info': {
-                    'duration': entry.get('length', '0'),
                     'plot': entry.get('description', ''),
                     'studio': entry.get('username', ''),
                     'date': entry.get('date', ''),
@@ -146,6 +145,9 @@ def __add_items(entries):
                 'context_menu': [
                     (_('download'), 'XBMC.RunPlugin(%s)' % download_url),
                 ],
+                'stream_info': {
+                    'video': {'duration': entry['length']}
+                },
                 'is_playable': True,
                 'path': plugin.url_for(
                     endpoint='watch_video',
