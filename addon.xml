@@ -13,6 +13,11 @@
     <!-- translation commit: 84113ddafdde2c18eac5fd9b9b8144abff06ccf9 -->
     <platform>all</platform>
     <language>de</language>
+    <website>http://www.myvideo.de</website>
+    <source>https://github.com/dersphere/plugin.video.myvideo_de</source>
+    <forum>http://forum.xbmc.org/showthread.php?tid=127105</forum>
+    <email>sphere@dersphere.de</email>
+    <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
     <summary lang="be">video plugin for MyVideo.de</summary>
     <summary lang="ca">afegitó de video per MyVideo.de</summary>
     <summary lang="de">Video plugin für MyVideo.de</summary>
