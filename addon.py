@@ -27,7 +27,8 @@ STRINGS = {
     'search': 30001,
     'download': 30020,
     'no_download_path': 30030,
-    'set_now?': 30031
+    'set_now?': 30031,
+    'hls_error': 30032,
 }
 
 plugin = Plugin()
@@ -46,13 +47,6 @@ def show_categories():
         'label': _('search'),
         'path': plugin.url_for('video_search')}
     )
-    items.append({
-        'label': _('webstars'),
-        'path': plugin.url_for(
-            endpoint='show_path',
-            path='webstars'
-        )
-    })
     return plugin.finish(items)
 
 
@@ -146,7 +140,7 @@ def __add_items(entries):
                     (_('download'), 'XBMC.RunPlugin(%s)' % download_url),
                 ],
                 'stream_info': {
-                    'video': {'duration': entry['length']}
+                    'video': {'duration': entry.get('length', 0)}
                 },
                 'is_playable': True,
                 'path': plugin.url_for(
@@ -254,3 +248,5 @@ if __name__ == '__main__':
         plugin.run()
     except scraper.NetworkError:
         plugin.notify(msg=_('network_error'))
+    except NotImplementedError:
+        plugin.notify(msg=_('hls_error'))

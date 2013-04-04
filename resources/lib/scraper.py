@@ -55,7 +55,8 @@ BLOCKED_SUBCATS = (
     '/Top_100/Top_100_Playlisten',
     '/Serien/WWE',
     '/Serien/Serien_Suche',
-    '/channel/unforgettable'
+    '/channel/unforgettable',
+    '/webstarts'
 )
 
 R_ID = re.compile('watch/([0-9]+)/?')
@@ -184,8 +185,12 @@ def get_video(video_id):
         video['rtmpurl'] = video['rtmpurl'].replace('rtmpe://', 'rtmpt://')
     playpath = re.search(r_playpath, dec_data).group(1)
     video['file'] = unquote(playpath)
-    ppath, prefix = unquote(playpath).split('.')
-    video['playpath'] = '%s:%s' % (prefix, ppath)
+    if not video['file'].endswith('f4m'):
+        ppath, prefix = unquote(playpath).split('.')
+        video['playpath'] = '%s:%s' % (prefix, ppath)
+    else:
+        raise NotImplementedError
+        video['playpath'] = video['file']
     swfobj = re.search(r_swf, html).group(1)
     video['swfobj'] = unquote(swfobj)
     video['pageurl'] = videopage_url
