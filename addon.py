@@ -171,6 +171,9 @@ def download_video(video_id):
     sd = SimpleDownloader.SimpleDownloader()
     video = scraper.get_video(video_id)
     filename = __get_legal_filename(video['title'])
+    if 'hls_playlist' in video:
+        plugin.notify(_('Download not supported'))
+        return
     if not video['rtmpurl']:
         params = {
             'url': video['filepath'] + video['file'],
@@ -193,6 +196,9 @@ def download_video(video_id):
 @plugin.route('/video/<video_id>/play')
 def watch_video(video_id):
     video = scraper.get_video(video_id)
+    if 'hls_playlist' in video:
+        __log('watch_video using HLS')
+        video_url = video['hls_playlist']
     if not video['rtmpurl']:
         __log('watch_video using FLV')
         video_url = video['filepath'] + video['file']
