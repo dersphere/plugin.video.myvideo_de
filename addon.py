@@ -104,7 +104,7 @@ def __add_items(entries):
                 title = '>> %s %s >>' % (_('page'), entry['title'])
             items.append({
                 'label': title,
-                'icon': 'DefaultFolder.png',
+                'thumbnail': 'DefaultFolder.png',
                 'path': plugin.url_for(
                     endpoint='show_path',
                     path=entry['path']
@@ -113,7 +113,7 @@ def __add_items(entries):
         elif entry['is_folder']:
             items.append({
                 'label': entry['title'],
-                'icon': entry.get('thumb', 'DefaultFolder.png'),
+                'thumbnail': entry.get('thumb', 'DefaultFolder.png'),
                 'path': plugin.url_for(
                     endpoint='show_path',
                     path=entry['path']
@@ -126,7 +126,7 @@ def __add_items(entries):
             )
             items.append({
                 'label': entry['title'],
-                'icon': entry.get('thumb', 'DefaultVideo.png'),
+                'thumbnail': entry.get('thumb', 'DefaultVideo.png'),
                 'info': {
                     'plot': entry.get('description', ''),
                     'studio': entry.get('username', ''),
