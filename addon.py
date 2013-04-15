@@ -33,6 +33,8 @@ STRINGS = {
 
 plugin = Plugin()
 
+# FIXME: add "My Folders"
+
 
 @plugin.route('/')
 def show_categories():
@@ -83,34 +85,34 @@ def show_subcategories(path):
 
 @plugin.route('/<path>/')
 def show_path(path):
-    items = scraper.get_path(path)
-    return __add_items(items)
+    items, next_page, prev_page = scraper.get_path(path)
+    return __add_items(items, next_page, prev_page)
 
 
-def __add_items(entries):
-    items = []
+def __add_items(entries, next_page=None, prev_page=None):
     update_on_pageswitch = plugin.get_setting('update_on_pageswitch') == 'true'
+    items = []
+    if prev_page:
+        items.append({
+            'label': '<< %s %s <<' % (_('page'), prev_page['number']),
+            'thumbnail': 'DefaultFolder.png',
+            'path': plugin.url_for(
+                endpoint='show_path',
+                path=prev_page['path']
+            )
+        })
+        if update_on_pageswitch:
+            is_update = True
     has_icons = False
     is_update = False
+    DEBUG_NUM = 3
     for entry in entries:
+        if DEBUG_NUM:
+            print entry
+            DEBUG_NUM -= 1
         if not has_icons and entry.get('thumb'):
             has_icons = True
-        if entry.get('pagenination'):
-            if entry['pagenination'] == 'PREV':
-                if update_on_pageswitch:
-                    is_update = True
-                title = '<< %s %s <<' % (_('page'), entry['title'])
-            elif entry['pagenination'] == 'NEXT':
-                title = '>> %s %s >>' % (_('page'), entry['title'])
-            items.append({
-                'label': title,
-                'thumbnail': 'DefaultFolder.png',
-                'path': plugin.url_for(
-                    endpoint='show_path',
-                    path=entry['path']
-                )
-            })
-        elif entry['is_folder']:
+        if entry['is_folder']:
             items.append({
                 'label': entry['title'],
                 'thumbnail': entry.get('thumb', 'DefaultFolder.png'),
@@ -140,7 +142,7 @@ def __add_items(entries):
                     (_('download'), 'XBMC.RunPlugin(%s)' % download_url),
                 ],
                 'stream_info': {
-                    'video': {'duration': entry.get('length', 0)}
+                    'video': {'duration': entry.get('duration', 0)}
                 },
                 'is_playable': True,
                 'path': plugin.url_for(
@@ -148,6 +150,15 @@ def __add_items(entries):
                     video_id=entry['video_id']
                 )
             })
+    if next_page:
+        items.append({
+            'label': '>> %s %s >>' % (_('page'), next_page['number']),
+            'thumbnail': 'DefaultFolder.png',
+            'path': plugin.url_for(
+                endpoint='show_path',
+                path=next_page['path']
+            )
+        })
     finish_kwargs = {
         #'sort_methods': ('UNSORTED', 'RATING', 'RUNTIME'),
         'update_listing': is_update
@@ -254,5 +265,3 @@ if __name__ == '__main__':
         plugin.run()
     except scraper.NetworkError:
         plugin.notify(msg=_('network_error'))
-    except NotImplementedError:
-        plugin.notify(msg=_('hls_error'))
