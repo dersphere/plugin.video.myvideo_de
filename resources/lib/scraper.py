@@ -354,14 +354,14 @@ class ShowCategoryScraper(BaseScraper):
         sub_categories = [
             ('Top Serien', 'Top_100/Top_100_Serien'),
             ('Neuste Folgen', '/Serien/Alle_Serien_A-Z'),
-            ('ProSieben', '/Serien/ProSieben'),
-            ('Sat 1', '/Serien/Sat_1'),
-            ('Anime TV', '/Serien/Anime_TV'),
-            ('kabel eins', '/Serien/kabel_eins'),
-            ('sixx', '/Serien/sixx'),
-            ('Sony Retro', '/Serien/Sony_Retro'),
-            ('Your Family Entertainment', '/Serien/Your_Family_Entertainment'),
-            ('Welt der Wunder', '/Serien/Welt_der_Wunder'),
+            ('  ProSieben', '/Serien/ProSieben'),
+            ('  Sat 1', '/Serien/Sat_1'),
+            ('  Anime TV', '/Serien/Anime_TV'),
+            ('  kabel eins', '/Serien/kabel_eins'),
+            ('  sixx', '/Serien/sixx'),
+            ('  Sony Retro', '/Serien/Sony_Retro'),
+            ('  Your Family Entertainment', '/Serien/Your_Family_Entertainment'),
+            ('  Welt der Wunder', '/Serien/Welt_der_Wunder'),
             ('Weitere Serien', '/Serien/Weitere_Serien'),
         ]
         items = [{
@@ -438,6 +438,33 @@ class MovieScraper(BaseScraper):
             'thumb': section.find(*self.img_props)['src']
         }
         return item
+
+
+class MovieCategoryScraper(BaseScraper):
+    path_matches = ('Filme', )
+
+    def parse(self, tree):
+        sub_categories = [
+            ('Top Filme', 'Top_100/Top_100_Filme'),
+            ('Neuste Filme', '/Videos_A-Z?searchChannelID=369&searchChannel=Film'),
+            ('  Comedy', '/Filme/Comedy'),
+            ('  Action', '/Filme/Action'),
+            ('  Horror', '/Filme/Horror'),
+            ('  Sci-Fi', '/Filme/Sci-Fi'),
+            ('  Thriller', '/Filme/Thriller'),
+            ('  Drama', '/Filme/Drama'),
+            ('  Western', '/Filme/Western'),
+            ('  Dokumentation', '/Filme/Dokumentation'),
+            ('  Konzerte', '/Filme/Konzerte'),
+            ('Alle Filme', '/Filme/Alle_Filme'),
+        ]
+        items = [{
+            'title': title,
+            'path': path,
+            'is_folder': True,
+            'video_id': None,
+        } for title, path in sub_categories]
+        return items, False, False
 
 
 # Needs to be before ArtistOverviewLetterScraper
