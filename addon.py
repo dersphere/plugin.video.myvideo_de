@@ -215,7 +215,7 @@ def watch_video(video_id):
     if 'hls_playlist' in video:
         __log('watch_video using HLS')
         video_url = video['hls_playlist']
-    if not video['rtmpurl']:
+    elif not video['rtmpurl']:
         __log('watch_video using FLV')
         video_url = video['filepath'] + video['file']
         __log('wget %s' % video_url)
