@@ -33,8 +33,6 @@ STRINGS = {
 
 plugin = Plugin()
 
-# FIXME: add "My Folders"
-
 
 @plugin.route('/')
 def show_categories():
@@ -47,8 +45,12 @@ def show_categories():
     } for category in scraper.get_categories()]
     items.append({
         'label': _('search'),
-        'path': plugin.url_for('video_search')}
-    )
+        'path': plugin.url_for('video_search')
+    })
+    items.append({
+        'label': _('show_my_favs'),
+        'path': plugin.url_for('show_my_favs')
+    })
     return plugin.finish(items)
 
 
@@ -70,20 +72,25 @@ def video_search_result(search_string):
     return __add_items(items)
 
 
-@plugin.route('/category/<path>/')
-def show_subcategories(path):
-    categories = scraper.get_sub_categories(path)
-    items = [{
-        'label': category['title'],
-        'path': plugin.url_for(
-            endpoint='show_path',
-            path=category['path']
-        )
-    } for category in categories]
+@plugin.route('/my_favs/')
+def show_my_favs():
+
+    def context_menu(item_path):
+        context_menu = [(
+            _('del_from_my_favs'),
+            'XBMC.RunPlugin(%s)' % plugin.url_for('del_from_my_favs',
+                                                  item_path=item_path),
+        )]
+        return context_menu
+
+    my_fav_items = plugin.get_storage('my_fav_items')
+    items = my_fav_items.values()
+    for item in items:
+        item['context_menu'] = context_menu(item['path'])
     return plugin.finish(items)
 
 
-@plugin.route('/<path>/')
+@plugin.route('/path/<path>/')
 def show_path(path):
     try:
         items, next_page, prev_page = scraper.get_path(path)
@@ -94,6 +101,37 @@ def show_path(path):
 
 
 def __add_items(entries, next_page=None, prev_page=None):
+    my_fav_items = plugin.get_storage('my_fav_items')
+
+    def context_menu(item_path, video_id):
+        if not item_path in my_fav_items:
+            context_menu = [(
+                _('add_to_my_favs'),
+                'XBMC.RunPlugin(%s)' % plugin.url_for(
+                    endpoint='add_to_my_favs',
+                    item_path=item_path
+                ),
+            )]
+        else:
+            context_menu = [(
+                _('del_from_my_favs'),
+                'XBMC.RunPlugin(%s)' % plugin.url_for(
+                    endpoint='del_from_my_favs',
+                    item_path=item_path
+                ),
+            )]
+        if video_id:
+            download_url = plugin.url_for(
+                endpoint='download_video',
+                video_id=video_id
+            )
+            context_menu.append(
+                (_('download'), 'XBMC.RunPlugin(%s)' % download_url)
+            )
+        return context_menu
+
+    temp_items = plugin.get_storage('temp_items')
+    temp_items.clear()
     items = []
     has_icons = False
     i = 0
@@ -111,14 +149,11 @@ def __add_items(entries, next_page=None, prev_page=None):
                 )
             })
         else:
-            download_url = plugin.url_for(
-                endpoint='download_video',
-                video_id=entry['video_id']
-            )
             items.append({
                 'label': entry['title'],
                 'thumbnail': entry.get('thumb', 'DefaultVideo.png'),
                 'info': {
+                    'video_id': entry['video_id'],
                     'count': i + 1,
                     'plot': entry.get('description', ''),
                     'studio': entry.get('author', {}).get('name', ''),
@@ -128,9 +163,6 @@ def __add_items(entries, next_page=None, prev_page=None):
                     'votes': unicode(entry.get('votes')),
                     'views': unicode(entry.get('views', 0))
                 },
-                'context_menu': [
-                    (_('download'), 'XBMC.RunPlugin(%s)' % download_url),
-                ],
                 'stream_info': {
                     'video': {'duration': entry.get('duration', 0)}
                 },
@@ -162,6 +194,14 @@ def __add_items(entries, next_page=None, prev_page=None):
                 update='true',
             )
         })
+
+    for item in items:
+        temp_items[item['path']] = item
+        item['context_menu'] = context_menu(
+            item['path'], item['info'].get('video_id')
+        )
+    temp_items.sync()
+
     update_on_pageswitch = plugin.get_setting('update_on_pageswitch', bool)
     is_update = update_on_pageswitch and 'update' in plugin.request.args
     finish_kwargs = {
@@ -239,6 +279,22 @@ def watch_video(video_id):
         ) % video
     __log('watch_video finished with url: %s' % video_url)
     return plugin.set_resolved_url(video_url)
+
+
+@plugin.route('/my_favs/add/<item_path>')
+def add_to_my_favs(item_path):
+    my_fav_items = plugin.get_storage('my_fav_items')
+    temp_items = plugin.get_storage('temp_items')
+    my_fav_items[item_path] = temp_items[item_path]
+    my_fav_items.sync()
+
+
+@plugin.route('/my_favs/del/<item_path>')
+def del_from_my_favs(item_path):
+    my_fav_items = plugin.get_storage('my_fav_items')
+    if item_path in my_fav_items:
+        del my_fav_items[item_path]
+        my_fav_items.sync()
 
 
 def __keyboard(title, text=''):
