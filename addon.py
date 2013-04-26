@@ -85,8 +85,12 @@ def show_subcategories(path):
 
 @plugin.route('/<path>/')
 def show_path(path):
-    items, next_page, prev_page = scraper.get_path(path)
-    return __add_items(items, next_page, prev_page)
+    try:
+        items, next_page, prev_page = scraper.get_path(path)
+    except NotImplementedError:
+        plugin.notify(msg=_('no_scraper_found'), title='Path: %s' % path)
+    else:
+        return __add_items(items, next_page, prev_page)
 
 
 def __add_items(entries, next_page=None, prev_page=None):
