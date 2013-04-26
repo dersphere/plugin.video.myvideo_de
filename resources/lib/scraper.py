@@ -382,7 +382,6 @@ class ChannelScraper(BaseScraper):
             if tree.find(*scraper.subtree_props):
                 print 'Redirecting to scraper-class: %s' % scraper.__name__
                 return scraper().parse(tree)
-        print 'Error in ChannelScraper!'
 
 
 class VideoChannelScraper(BaseScraper):
@@ -486,7 +485,7 @@ class ArtistOverviewScraper(BaseScraper):
 
 # Needs to be before MusicScraper
 class ArtistOverviewLetterScraper(BaseScraper):
-    path_matches = ('Musik_K%C3%BCnstler', )
+    path_matches = ('Musik_K%C3%Bcnstler', )
     subtree_props = ('div', {'class': 'lContent'})
     section_props = ('td', {'class': 'mView'})
     a_props = ('a', {'class': 'mView pLetters'})
@@ -514,6 +513,31 @@ class MusicScraper(BaseScraper):
     duration_props = ('span', {'class': 'vViews'})
     author_props = ('span', {'class': 'nick'})
     date_props = ('div', {'class': re.compile('vAdded')})
+
+
+class MusicCategoryScraper(BaseScraper):
+    path_matches = ('Musik', )
+
+    def parse(self, tree):
+        sub_categories = [
+            ('Charts', '/Top_100/Top_100_Single_Charts'),
+            ('Neue Musik Videos', '/Musik/Neue_Musik_Videos'),
+            ('  Rock', '/Musik/Rock'),
+            ('  Pop', '/Musik/Pop'),
+            ('  Rap/R&B', '/Musik/Rap/R%26B'),
+            ('  Schlager', '/Musik/Neue_Musik_Videos?searchChannelID=206&amp;searchChannel=Schlager'),
+            ('  Electro', '/Musik/Neue_Musik_Videos?searchChannelID=205&amp;searchChannel=Electro'),
+            ('  Metal', '/Musik/Neue_Musik_Videos?searchChannelID=204&amp;searchChannel=Metal'),
+            ('  RnB', '/Musik/Neue_Musik_Videos?searchChannelID=207&amp;searchChannel=RnB'),
+            ('Musik Kuenstler', '/Musik/Musik_K%C3%Bcnstler'),
+        ]
+        items = [{
+            'title': title,
+            'path': path,
+            'is_folder': True,
+            'video_id': None,
+        } for title, path in sub_categories]
+        return items, False, False
 
 
 def get_path(path):
