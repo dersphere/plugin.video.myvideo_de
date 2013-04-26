@@ -243,7 +243,18 @@ class BaseScraper(object):
 # FIXME Rating/Votes
 # FIXME Plot
 
-# Needs to be before TopScraper
+
+# Needs to be before TopCategoryScraper
+class TopScraper(BaseScraper):
+    path_matches = ('Top_100/', )
+    subtree_props = ('div', {'class': 'lContent'})
+    section_props = ('div', {'class': re.compile('vThumb')})
+    a_props = ('a', )
+    img_props = ('img', )
+    duration_props = ('span', {'class': 'vViews'})
+    author_props = ('span', {'class': 'nick'})
+
+
 class TopCategoryScraper(BaseScraper):
     path_matches = ('Top_100', )
     section_props = ('div', {'id': re.compile('id_[0-9]+_init')})
@@ -262,16 +273,6 @@ class TopCategoryScraper(BaseScraper):
             'video_id': video_id,
         }
         return item
-
-
-class TopScraper(BaseScraper):
-    path_matches = ('Top_100/', )
-    subtree_props = ('div', {'class': 'lContent'})
-    section_props = ('div', {'class': re.compile('vThumb')})
-    a_props = ('a', )
-    img_props = ('img', )
-    duration_props = ('span', {'class': 'vViews'})
-    author_props = ('span', {'class': 'nick'})
 
 
 # Needs to be before VideoScraper
