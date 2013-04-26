@@ -95,24 +95,16 @@ def show_path(path):
 
 def __add_items(entries, next_page=None, prev_page=None):
     items = []
-    if prev_page:
-        items.append({
-            'label': '<< %s %s <<' % (_('page'), prev_page['number']),
-            'thumbnail': 'DefaultFolder.png',
-            'path': plugin.url_for(
-                endpoint='show_path',
-                path=prev_page['path'],
-                update='true',
-            )
-        })
     has_icons = False
-    for entry in entries:
+    i = 0
+    for i, entry in enumerate(entries):
         if not has_icons and entry.get('thumb'):
             has_icons = True
         if entry['is_folder']:
             items.append({
                 'label': entry['title'],
                 'thumbnail': entry.get('thumb', 'DefaultFolder.png'),
+                'info': {'count': i + 1},
                 'path': plugin.url_for(
                     endpoint='show_path',
                     path=entry['path']
@@ -127,8 +119,9 @@ def __add_items(entries, next_page=None, prev_page=None):
                 'label': entry['title'],
                 'thumbnail': entry.get('thumb', 'DefaultVideo.png'),
                 'info': {
+                    'count': i + 1,
                     'plot': entry.get('description', ''),
-                    'studio': entry.get('username', ''),
+                    'studio': entry.get('author', {}).get('name', ''),
                     'date': entry.get('date', ''),
                     'year': int(entry.get('year', 0)),
                     'rating': float(entry.get('rating', 0)),
@@ -147,10 +140,22 @@ def __add_items(entries, next_page=None, prev_page=None):
                     video_id=entry['video_id']
                 )
             })
+    if prev_page:
+        items.append({
+            'label': '<< %s %s <<' % (_('page'), prev_page['number']),
+            'info': {'count': 0},
+            'thumbnail': 'DefaultFolder.png',
+            'path': plugin.url_for(
+                endpoint='show_path',
+                path=prev_page['path'],
+                update='true',
+            )
+        })
     if next_page:
         items.append({
             'label': '>> %s %s >>' % (_('page'), next_page['number']),
             'thumbnail': 'DefaultFolder.png',
+            'info': {'count': i + 2},
             'path': plugin.url_for(
                 endpoint='show_path',
                 path=next_page['path'],
@@ -160,10 +165,10 @@ def __add_items(entries, next_page=None, prev_page=None):
     update_on_pageswitch = plugin.get_setting('update_on_pageswitch', bool)
     is_update = update_on_pageswitch and 'update' in plugin.request.args
     finish_kwargs = {
-        #'sort_methods': ('UNSORTED', 'RATING', 'RUNTIME'),
+        'sort_methods': ('playlist_order', ),
         'update_listing': is_update
     }
-    if has_icons and plugin.get_setting('force_viewmode') == 'true':
+    if has_icons and plugin.get_setting('force_viewmode', bool):
         finish_kwargs['view_mode'] = 'thumbnail'
     return plugin.finish(items, **finish_kwargs)
 
