@@ -185,7 +185,7 @@ def download_video(video_id):
     if 'hls_playlist' in video:
         plugin.notify(_('Download not supported'))
         return
-    if not video['rtmpurl']:
+    elif not video['rtmpurl']:
         params = {
             'url': video['filepath'] + video['file'],
         }
