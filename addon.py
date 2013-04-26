@@ -94,7 +94,6 @@ def show_path(path):
 
 
 def __add_items(entries, next_page=None, prev_page=None):
-    update_on_pageswitch = plugin.get_setting('update_on_pageswitch') == 'true'
     items = []
     if prev_page:
         items.append({
@@ -102,18 +101,12 @@ def __add_items(entries, next_page=None, prev_page=None):
             'thumbnail': 'DefaultFolder.png',
             'path': plugin.url_for(
                 endpoint='show_path',
-                path=prev_page['path']
+                path=prev_page['path'],
+                update='true',
             )
         })
-        if update_on_pageswitch:
-            is_update = True
     has_icons = False
-    is_update = False
-    DEBUG_NUM = 3
     for entry in entries:
-        if DEBUG_NUM:
-            print entry
-            DEBUG_NUM -= 1
         if not has_icons and entry.get('thumb'):
             has_icons = True
         if entry['is_folder']:
@@ -160,9 +153,12 @@ def __add_items(entries, next_page=None, prev_page=None):
             'thumbnail': 'DefaultFolder.png',
             'path': plugin.url_for(
                 endpoint='show_path',
-                path=next_page['path']
+                path=next_page['path'],
+                update='true',
             )
         })
+    update_on_pageswitch = plugin.get_setting('update_on_pageswitch', bool)
+    is_update = update_on_pageswitch and 'update' in plugin.request.args
     finish_kwargs = {
         #'sort_methods': ('UNSORTED', 'RATING', 'RUNTIME'),
         'update_listing': is_update
