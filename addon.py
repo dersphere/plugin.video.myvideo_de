@@ -75,8 +75,8 @@ def video_search():
 
 @plugin.route('/search/<search_string>/')
 def video_search_result(search_string):
-    items = scraper.get_search_result(search_string)
-    return __add_items(items)
+    path = scraper.get_search_path(search_string)
+    return show_path(path)
 
 
 @plugin.route('/my_favs/')

@@ -42,20 +42,6 @@ CATEGORIES = (
     {'title': 'Musik', 'path': 'Musik'}
 )
 
-BLOCKED_SUBCATS = (
-    '/Videos_A-Z/Video_Flight',
-    '/Videos_A-Z/Videos_in_Playlisten',
-    '/musik-tv',
-    '/channel/Clipgenerator',
-    '/echo',
-    '/Themen/Sexy',
-    '/Top_100/Top_100_Playlisten',
-    '/Serien/WWE',
-    '/Serien/Serien_Suche',
-    '/channel/unforgettable',
-    '/webstarts'
-)
-
 R_ID = re.compile('watch/([0-9]+)/?')
 
 
@@ -67,33 +53,10 @@ def get_categories():
     return CATEGORIES
 
 
-def get_sub_categories(path):
-    log('get_sub_categories started with path: %s' % path)
-    tree = requester.get_tree(MAIN_URL)
-    section = tree.find('div', {'class': 'body topNavFW'})
-    sub_cats = []
-    link = section.find('a', {'href': '/%s' % path})
-    if link:
-        for l in link.parent.findAll('a', {'class': 'topsub nArrow'}):
-            if l['href'] in BLOCKED_SUBCATS:
-                log('skipping entry with link: %s' % l['href'])
-                continue
-            elif '/watch/' in l['href']:
-                log('skipping playable entry with link: %s' % l['href'])
-                continue
-            sub_cats.append({
-                'title': l.span.string.strip(),
-                'path': l['href'][1:]}
-            )
-    log('get_sub_categories finished with %d elements' % len(sub_cats))
-    return sub_cats
-
-
-def get_search_result(query):
+def get_search_path(query):
     log('get_search_result started with path: %s' % query)
     path = '/Videos_A-Z?%s' % urlencode({'searchWord': query})
-    items = get_path(path)
-    return items
+    return path
 
 
 class BaseScraper(object):
@@ -679,6 +642,3 @@ def log(msg):
 
 
 requester = SessionRequester()
-
-if __name__ == '__main__':
-    test()
