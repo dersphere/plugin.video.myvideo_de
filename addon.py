@@ -41,7 +41,7 @@ def show_categories():
     items = [{
         'label': category['title'],
         'path': plugin.url_for(
-            endpoint='show_subcategories',
+            endpoint='show_path',
             path=category['path']
         )
     } for category in scraper.get_categories()]

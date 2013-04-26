@@ -243,9 +243,29 @@ class BaseScraper(object):
 # FIXME Rating/Votes
 # FIXME Plot
 
+# Needs to be before TopScraper
+class TopCategoryScraper(BaseScraper):
+    path_matches = ('Top_100', )
+    section_props = ('div', {'id': re.compile('id_[0-9]+_init')})
+    title_div_props = ('div', {'class': re.compile('entry-title hidden')})
+    path_td_props = ('td', {'class': re.compile('shAll')})
+
+    def parse_item(self, section):
+        title_div = section.find(*self.title_div_props)
+        path_td = section.find(*self.path_td_props)
+        path = path_td.a['href']
+        is_folder, video_id = self.detect_folder(path)
+        item = {
+            'title': title_div.string.strip(),
+            'path': path,
+            'is_folder': is_folder,
+            'video_id': video_id,
+        }
+        return item
+
 
 class TopScraper(BaseScraper):
-    path_matches = ('Top_100', )
+    path_matches = ('Top_100/', )
     subtree_props = ('div', {'class': 'lContent'})
     section_props = ('div', {'class': re.compile('vThumb')})
     a_props = ('a', )
