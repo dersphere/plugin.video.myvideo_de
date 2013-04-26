@@ -29,6 +29,13 @@ STRINGS = {
     'no_download_path': 30030,
     'set_now?': 30031,
     'hls_error': 30032,
+    'show_my_favs': 30002,
+    'no_scraper_found': 30003,
+    'add_to_my_favs': 30004,
+    'del_from_my_favs': 30005,
+    'no_my_favs': 30006,
+    'use_context_menu': 30007,
+    'to_add': 30008,
 }
 
 plugin = Plugin()
@@ -87,6 +94,10 @@ def show_my_favs():
     items = my_fav_items.values()
     for item in items:
         item['context_menu'] = context_menu(item['path'])
+    if not items:
+        dialog = xbmcgui.Dialog()
+        dialog.ok(_('no_my_favs'), _('use_context_menu'), _('to_add'))
+        return
     return plugin.finish(items)
 
 
