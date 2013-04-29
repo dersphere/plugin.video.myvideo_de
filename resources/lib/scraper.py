@@ -580,6 +580,7 @@ class SessionRequester(object):
             # do a useless request to get a cookie...
             self.get_url(MAIN_URL)
         html = self.get_url(url, referer)
+        html = html.decode('utf-8', 'ignore')  # Fix MyVideo.de bad enc
         tree = BeautifulSoup(html, convertEntities=BeautifulSoup.HTML_ENTITIES)
         return tree
 
