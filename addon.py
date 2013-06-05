@@ -181,6 +181,7 @@ def __add_items(entries, next_page=None, prev_page=None):
                 'thumbnail': better_thumbnail(
                     entry.get('thumb', 'DefaultVideo.png')
                 ),
+                'icon': entry.get('thumb', 'DefaultVideo.png'),
                 'info': {
                     'video_id': entry['video_id'],
                     'count': i + 1,
@@ -225,6 +226,8 @@ def __add_items(entries, next_page=None, prev_page=None):
         })
 
     for item in items:
+        print repr(item['label'])
+        print repr(item['thumbnail'])
         temp_items[item['path']] = item
         item['context_menu'] = context_menu(
             item['path'], item['info'].get('video_id')
