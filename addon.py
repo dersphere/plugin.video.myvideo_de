@@ -226,8 +226,6 @@ def __add_items(entries, next_page=None, prev_page=None):
         })
 
     for item in items:
-        print repr(item['label'])
-        print repr(item['thumbnail'])
         temp_items[item['path']] = item
         item['context_menu'] = context_menu(
             item['path'], item['info'].get('video_id')
