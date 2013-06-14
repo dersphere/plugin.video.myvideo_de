@@ -17,6 +17,7 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+import sys
 import string
 from xbmcswift2 import Plugin, xbmc, xbmcgui
 import SimpleDownloader
@@ -230,6 +231,8 @@ def __add_items(entries, next_page=None, prev_page=None):
         item['context_menu'] = context_menu(
             item['path'], item['info'].get('video_id')
         )
+    # Avoid hitting cPickle's platform specific recursion limit
+    sys.setrecursionlimit(2000)
     temp_items.sync()
 
     update_on_pageswitch = plugin.get_setting('update_on_pageswitch', bool)
