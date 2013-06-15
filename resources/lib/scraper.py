@@ -502,19 +502,18 @@ class ArtistOverviewScraper(BaseScraper):
 # Needs to be before MusicScraper
 class ArtistOverviewLetterScraper(BaseScraper):
     path_matches = ('Musik_K%C3%Bcnstler', )
-    subtree_props = ('div', {'class': 'lContent'})
-    section_props = ('td', {'class': 'mView'})
-    a_props = ('a', {'class': 'mView pLetters'})
 
-    def parse_item(self, section):
-        path = section.a['href']
-        is_folder, video_id = self.detect_folder(path)
-        item = {
-            'title': section.a.string,
-            'path': path,
-            'is_folder': is_folder,
-        }
-        return item
+    def parse(self, tree):
+        p = 'Musik/Musik_K%C3%BCnstler?lpage='
+        letters = (
+            '0-9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+            'L', 'M', 'N', 'O', 'P-R', 'S', 'T', 'U-Z'
+        )
+        return [{
+            'title': s,
+            'path': p + str(i),
+            'is_folder': True,
+        } for i, s in enumerate(letters)], None, None
 
 
 class MusicScraper(BaseScraper):
