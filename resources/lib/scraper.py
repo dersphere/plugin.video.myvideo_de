@@ -213,8 +213,6 @@ class BaseScraper(object):
     def log(self, msg):
         print('MyVideo.de scraper %s: %s' % (self.__class__.__name__, msg))
 
-# FIXME re.compile -> r''
-# FIXME turn show name if 'Staffel' in title
 # FIXME Rating/Votes
 # FIXME Plot
 
