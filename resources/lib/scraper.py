@@ -293,7 +293,7 @@ class AllShowOverviewScraper(BaseScraper):
         path = previous_section.a['href']
         is_folder, video_id = self.detect_folder(path)
         item = {
-            'title': previous_section.a.string,
+            'title': unicode(previous_section.a.string),
             'path': path,
             'is_folder': is_folder,
             'video_id': video_id,
