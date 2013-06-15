@@ -102,7 +102,7 @@ class BaseScraper(object):
     def parse(self, tree):
         sections = self.get_sections(tree)
         if not sections:
-            print 'Found no sections :('
+            self.log('Found no sections :(')
         items = (self.parse_item(section) for section in sections)
         # Need this double generator pass to filter out skipped items
         items = (i for i in items if i)
@@ -113,7 +113,7 @@ class BaseScraper(object):
         if self.subtree_props:
             subtree = tree.find(*self.subtree_props)
             if subtree:
-                print 'found subtree'
+                self.log('found subtree')
                 tree = subtree
         sections = tree.findAll(*self.section_props)
         #print 'sections: %s' % sections
@@ -156,7 +156,7 @@ class BaseScraper(object):
         if img:
             return img.get('longdesc') or img.get('src')
         else:
-            print 'Error in get_img!'
+            self.log('Error in get_img!')
 
     def parse_pagination(self, tree):
 
@@ -175,16 +175,16 @@ class BaseScraper(object):
         if self.pagination_section_props:
             section = tree.find(*self.pagination_section_props)
             if section:
-                print 'found pagination section'
+                self.log('found pagination section')
                 if self.next_page_props:
                     a = section.find(*self.next_page_props)
                     if a:
-                        print 'found pagenination next link'
+                        self.log('found pagenination next link')
                         next_page = get_path(a)
                 if self.prev_page_props:
                     a = section.find(*self.prev_page_props)
                     if a:
-                        print 'found pagenination prev link'
+                        self.log('found pagenination prev link')
                         prev_page = get_path(a)
         return next_page, prev_page
 
@@ -210,8 +210,8 @@ class BaseScraper(object):
             return seconds
         return 0
 
-    def log(self):
-        print('MyVideo.de scraper: %s' % msg)
+    def log(self, msg):
+        print('MyVideo.de scraper %s: %s' % (self.__class__.__name__, msg))
 
 # FIXME re.compile -> r''
 # FIXME turn show name if 'Staffel' in title
@@ -357,12 +357,14 @@ class ChannelScraper(BaseScraper):
 
     def parse(self, tree):
         if tree.find(*MusicChannelScraper.subtree_props):
-            print 'Redirecting to scraper-class: MusicChannelScraper'
+            self.log('Redirecting to scraper-class: MusicChannelScraper')
             return MusicChannelScraper().parse(tree)
         clips_found = tree.find(*VideoChannelClipScraper.subtree_props)
         full_found = tree.find(*VideoChannelFullScraper.subtree_props)
+        if clips_found or full_found:
+            self.log('Redirecting to scraper-class: VideoChannelFullScraper')
         if clips_found and full_found:
-            print 'Found clips and full episodes'
+            self.log('Found clips and full episodes')
             if not self.extra_arg:
                 items = [{
                     'title': 'Full Episodes',
@@ -496,7 +498,7 @@ class ArtistOverviewScraper(BaseScraper):
             img = img.find('img')
             return img.get('longdesc') or img.get('src')
         else:
-            print 'Error in get_img!'
+            self.log('Error in get_img!')
 
 
 # Needs to be before MusicScraper
