@@ -80,6 +80,17 @@ class BaseScraper(object):
 
     needs_cookie = False
 
+    def get_tree(self, path):
+        extra_arg = None
+        if 'EXTRA_ARG=' in path:
+            path, extra_arg = path.split('EXTRA_ARG=')
+        self.path = path
+        self.extra_arg = extra_arg
+        tree = requester.get_tree(
+            MAIN_URL + path, needs_cookie=self.needs_cookie
+        )
+        return tree
+
     @classmethod
     def choose_scraper(cls, path):
         log('Trying to find a matching scraper class for path: "%s"' % path)
@@ -339,26 +350,67 @@ class ShowCategoryScraper(BaseScraper):
 
 # Needs to be before MusicChannelScraper and VideoChannelScraper
 class ChannelScraper(BaseScraper):
-    path_matches = ('channel/', 'full_episodes', 'mv_user_branded_content_box')
+    path_matches = (
+        'channel/', 'full_episodes',
+        'mv_user_branded_content_box', 'highlight_clips'
+    )
 
     def parse(self, tree):
-        for scraper in (MusicChannelScraper, VideoChannelScraper):
-            if tree.find(*scraper.subtree_props):
-                print 'Redirecting to scraper-class: %s' % scraper.__name__
-                return scraper().parse(tree)
+        if tree.find(*MusicChannelScraper.subtree_props):
+            print 'Redirecting to scraper-class: MusicChannelScraper'
+            return MusicChannelScraper().parse(tree)
+        clips_found = tree.find(*VideoChannelClipScraper.subtree_props)
+        full_found = tree.find(*VideoChannelFullScraper.subtree_props)
+        if clips_found and full_found:
+            print 'Found clips and full episodes'
+            if not self.extra_arg:
+                items = [{
+                    'title': 'Full Episodes',
+                    'path': self.path + 'EXTRA_ARG=FULL',
+                    'is_folder': True,
+                    'video_id': None,
+                }, {
+                    'title': 'Clips',
+                    'path': self.path + 'EXTRA_ARG=CLIPS',
+                    'is_folder': True,
+                    'video_id': None,
+                }]
+                return items, None, None
+            elif self.extra_arg == 'FULL':
+                return VideoChannelFullScraper().parse(tree)
+            elif self.extra_arg == 'CLIPS':
+                return VideoChannelClipScraper().parse(tree)  
+        elif clips_found:
+            return VideoChannelClipScraper().parse(tree)
+        elif full_found:
+            return VideoChannelFullScraper().parse(tree)
+                
 
 
-class VideoChannelScraper(BaseScraper):
-    rex = re.compile('chIDfull_episodes|chIDhighlight_clips')
-    subtree_props = ('div', {'class': rex})  # FIXME
-    section_props = ('div', {'class': re.compile('full_episodes')})
+class VideoChannelClipScraper(BaseScraper):
+    subtree_re = re.compile('chIDhighlight_clips')
+    section_re = re.compile('highlight_clips')
+    subtree_props = ('div', {'class': subtree_re})
+    section_props = ('div', {'class': section_re})
     a_props = ('a', {'class': 'series_play'})
     img_props = ('img', {'class': 'vThumb'})
     duration_props = ('span', {'class': 'vViews'})
-    pagination_section_props = ('div', {'class': 'pViewBottom'})
+    pagination_section_props = ('div', {'class': subtree_re})
     next_page_props = ('a', {'class': 'pView pSmaller pnNext'})
     prev_page_props = ('a', {'class': 'pView pSmaller pnBack'})
-    # FIXME: add clips
+
+
+class VideoChannelFullScraper(BaseScraper):
+    subtree_re = re.compile('chIDfull_episodes')
+    section_re = re.compile('full_episodes')
+    subtree_props = ('div', {'class': subtree_re})
+    section_props = ('div', {'class': section_re})
+    a_props = ('a', {'class': 'series_play'})
+    img_props = ('img', {'class': 'vThumb'})
+    duration_props = ('span', {'class': 'vViews'})
+    pagination_section_props = ('div', {'class': subtree_re})
+    next_page_props = ('a', {'class': 'pView pSmaller pnNext'})
+    prev_page_props = ('a', {'class': 'pView pSmaller pnBack'})
 
 
 class MusicChannelScraper(BaseScraper):
@@ -510,7 +562,7 @@ def get_path(path):
     if not scraper:
         raise NotImplementedError
     log('Found matching scraper-class: %s' % scraper.__class__.__name__)
-    tree = requester.get_tree(MAIN_URL + path, needs_cookie=scraper.needs_cookie)
+    tree = scraper.get_tree(path)
     return scraper.parse(tree)
 
 
