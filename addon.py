@@ -18,7 +18,6 @@
 #
 
 import re
-import string
 from xbmcswift2 import Plugin, xbmc, xbmcgui
 from resources.lib import scraper
 
@@ -138,9 +137,9 @@ def __add_items(entries, next_page=None, prev_page=None):
         return title
 
     def better_thumbnail(thumb_url):
-        if thumb_url.startswith('http://img') and 'web/' in thumb_url:
-            thumb_url = thumb_url.replace('http://img', 'http://is')
-            thumb_url = re.sub('web/[0-9]+', 'de', thumb_url)
+        if 'web/' in thumb_url and not thumb_url.startswith('http://is'):
+            thumb_url = thumb_url.replace('http://i', 'http://is')
+            thumb_url = re.sub('mv/web/[0-9]+', 'de', thumb_url)
             thumb_url = thumb_url.replace('.jpg', '.jpg_hq.jpg')
         return thumb_url
 
