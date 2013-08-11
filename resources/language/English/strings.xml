@@ -20,4 +20,12 @@
     <string id="30011">Update container on page switch</string>
     <string id="30012">Download Path</string>
     <string id="30013">Fix TV Show title</string>
+
+    <!-- Context Menu entries -->
+    <string id="30020">Download Video</string>
+
+    <!-- dialog entries -->
+    <string id="30030">No Download path!</string>
+    <string id="30031">Do you want to set the path now?</string>
+    <string id="30032">HLS not supported</string>
 </strings>
