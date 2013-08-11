@@ -20,16 +20,11 @@
 import re
 import string
 from xbmcswift2 import Plugin, xbmc, xbmcgui
-import SimpleDownloader
 from resources.lib import scraper
 
 STRINGS = {
     'page': 30000,
     'search': 30001,
-    'download': 30020,
-    'no_download_path': 30030,
-    'set_now?': 30031,
-    'hls_error': 30032,
     'show_my_favs': 30002,
     'no_scraper_found': 30003,
     'add_to_my_favs': 30004,
@@ -132,14 +127,6 @@ def __add_items(entries, next_page=None, prev_page=None):
                     item_path=item_path
                 ),
             )]
-        if video_id:
-            download_url = plugin.url_for(
-                endpoint='download_video',
-                video_id=video_id
-            )
-            context_menu.append(
-                (_('download'), 'XBMC.RunPlugin(%s)' % download_url)
-            )
         return context_menu
 
     def format_episode_title(title):
@@ -244,42 +231,6 @@ def __add_items(entries, next_page=None, prev_page=None):
     return plugin.finish(items, **finish_kwargs)
 
 
-@plugin.route('/video/<video_id>/download')
-def download_video(video_id):
-    download_path = plugin.get_setting('download_path')
-    while not download_path:
-        dialog = xbmcgui.Dialog()
-        set_now = dialog.yesno(_('no_download_path'), _('set_now?'))
-        if set_now:
-            plugin.open_settings()
-            download_path = plugin.get_setting('download_path')
-        else:
-            return
-    sd = SimpleDownloader.SimpleDownloader()
-    video = scraper.get_video(video_id)
-    filename = __get_legal_filename(video['title'])
-    if 'hls_playlist' in video:
-        plugin.notify(_('Download not supported'))
-        return
-    elif not video['rtmpurl']:
-        params = {
-            'url': video['filepath'] + video['file'],
-        }
-    else:
-        params = {
-            'use_rtmpdump': True,
-            'url': video['rtmpurl'],
-            'tcUrl': video['rtmpurl'],
-            'swfUrl': video['swfobj'],
-            'pageUrl': video['pageurl'],
-            'playpath': video['playpath']
-        }
-    params['download_path'] = download_path
-    __log('params: %s' % repr(params))
-    __log('start downloading: %s to path: %s' % (filename, download_path))
-    sd.download(filename, params)
-
-
 @plugin.route('/video/<video_id>/play')
 def watch_video(video_id):
     video = scraper.get_video(video_id)
@@ -289,18 +240,8 @@ def watch_video(video_id):
     elif not video['rtmpurl']:
         __log('watch_video using FLV')
         video_url = video['filepath'] + video['file']
-        __log('wget %s' % video_url)
     else:
         __log('watch_video using RTMPE or RTMPT')
-        __log((
-            'rtmpdump '
-            '--rtmp "%(rtmpurl)s" '
-            '--flv "test.flv" '
-            '--tcUrl "%(rtmpurl)s" '
-            '--swfVfy "%(swfobj)s" '
-            '--pageUrl "%(pageurl)s" '
-            '--playpath "%(playpath)s"'
-        ) % video)
         video_url = (
             '%(rtmpurl)s '
             'tcUrl=%(rtmpurl)s '
@@ -333,11 +274,6 @@ def __keyboard(title, text=''):
     keyboard.doModal()
     if keyboard.isConfirmed() and keyboard.getText():
         return keyboard.getText()
-
-
-def __get_legal_filename(title):
-    chars = ' ._-%s%s' % (string.ascii_letters, string.digits)
-    return '%s.flv' % ''.join((c for c in title if c in chars))
 
 
 def _(string_id):
