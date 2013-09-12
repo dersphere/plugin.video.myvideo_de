@@ -325,7 +325,7 @@ class ShowCategoryScraper(BaseScraper):
 
     def parse(self, tree):
         sub_categories = [
-            ('Top Serien', 'Top_100/Top_100_Serien'),
+            ('Top Episoden', 'Top_100/Top_100_Serien'),
             ('Alle Serien', '/Serien/Alle_Serien_A-Z'),
             ('  ProSieben', '/Serien/ProSieben'),
             ('  Sat 1', '/Serien/Sat_1'),
