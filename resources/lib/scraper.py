@@ -332,8 +332,11 @@ class ShowCategoryScraper(BaseScraper):
             ('  Anime TV', '/Serien/Anime_TV'),
             ('  kabel eins', '/Serien/kabel_eins'),
             ('  sixx', '/Serien/sixx'),
+            ('  ProSieben MAXX', '/Serien/ProSieben_MAXX'),
+            ('  YEP!', '/Serien/YEP'),
             ('  Sony Retro', '/Serien/Sony_Retro'),
             ('  Your Family Entertainment', '/Serien/Your_Family_Entertainment'),
+            ('  BBC', '/Serien/BBC'),
             ('  Welt der Wunder', '/Serien/Welt_der_Wunder'),
             ('Weitere Serien', '/Serien/Weitere_Serien'),
         ]
@@ -599,6 +602,7 @@ def get_video(video_id):
     enc_data_b = unhexlify(enc_data)
     sk = __md5(b64decode(b64decode(GK)) + __md5(str(video_id)))
     dec_data = __rc4crypt(enc_data_b, sk)
+    print repr(dec_data)
     rtmpurl = re.search(r_rtmpurl, dec_data).group(1)
     video['rtmpurl'] = unquote(rtmpurl)
     if 'myvideo2flash' in video['rtmpurl']:
