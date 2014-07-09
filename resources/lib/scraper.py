@@ -591,7 +591,7 @@ def get_video(video_id):
     video = {}
     params = {}
     encxml = ''
-    videopage_url = MAIN_URL + 'watch/%s/' % video_id
+    videopage_url = MAIN_URL + 'watch/%s' % video_id
     html = requester.get_url(videopage_url, MAIN_URL)
     video['title'] = re.search(r_title, html).group(1)
     sec = re.search(r_adv, html).group(1)
